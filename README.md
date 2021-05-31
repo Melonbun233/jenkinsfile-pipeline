@@ -1,5 +1,5 @@
 # custom-slack-notifier
-test pr
+test pr pr
 ## Introduction
 
 TODO Describe what your plugin does here
