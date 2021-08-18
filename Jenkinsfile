@@ -53,10 +53,13 @@ def read_artifact() {
     } 
 
     echo ("Current build number: ${currentBuild.number}. Previously: ${currentBuild.previousBuild.number}")
-    copyArtifacts (filter: 'test_artifact.yaml', 
+    copyArtifacts (
+        filter: 'test_artifact.yaml', 
+        fingerprintArtifacts: true,
         projectName: '${JOB_NAME}', 
         selector: specific("${currentBuild.previousBuild.number}"), 
-        optional: true)
+        optional: true
+    )
 
     if (fileExists("test_artifact.yaml")){
         echo "test_artifact copied"
