@@ -86,7 +86,7 @@ def save_artifact (int i) {
 }
 
 def read_artifact(int i) {
-    if (currentBuild.number == '1') {
+    if (currentBuild.number == 1) {
         echo "First build, not expect artifact"
         return
     } 
