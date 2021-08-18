@@ -30,39 +30,30 @@ pipeline {
             }
         }
         stage('Create Artifact and save') {
-            steps {
-                save_artifact_in_parallel()
+            parallel {
+                stage('Branch 1') {
+                    steps {
+                        save_artifact (1)
+                    }
+                }
+                stage('Branch 2') {
+                    steps {
+                        save_artifact (2)
+                    }
+                }
+                stage('Branch 3') {
+                    steps {
+                        save_artifact (3)
+                    }
+                }
+                stage('Branch 4') {
+                    steps {
+                        save_artifact (4)
+                    }
+                }
             }
         }
     }
-}
-
-def save_artifact_in_parallel () {
-    // test parallel saving
-
-    parallel {
-        stage('Branch 1') {
-            steps {
-                save_artifact (1)
-            }
-        }
-        stage('Branch 2') {
-            steps {
-                save_artifact (2)
-            }
-        }
-        stage('Branch 3') {
-            steps {
-                save_artifact (3)
-            }
-        }
-        stage('Branch 4') {
-            steps {
-                save_artifact (4)
-            }
-        }
-    }
-
 }
 
 def save_artifact (int i) {
