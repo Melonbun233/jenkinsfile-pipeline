@@ -50,10 +50,7 @@ def save_artifact_in_parallel () {
             }
         }
     }
-
-    lock(label: "test parallel label", quantity: branch_size, resource: null) { 
-            parallel branches
-    }
+    parallel branches
 }
 
 def save_artifact (int i) {
