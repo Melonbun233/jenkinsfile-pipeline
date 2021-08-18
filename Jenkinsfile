@@ -39,18 +39,30 @@ pipeline {
 
 def save_artifact_in_parallel () {
     // test parallel saving
-    branches = [:]
-    branch_size = 4
-    for (int i = 0; i < branch_size; i ++) {
-        branches["branch_${i}"] = {
-            stage("Save Artifact Branch_${i}") {
-                steps{
-                    save_artifact (i)
-                }
+
+    parallel {
+        stage('Branch 1') {
+            steps {
+                save_artifact (1)
+            }
+        }
+        stage('Branch 2') {
+            steps {
+                save_artifact (2)
+            }
+        }
+        stage('Branch 3') {
+            steps {
+                save_artifact (3)
+            }
+        }
+        stage('Branch 4') {
+            steps {
+                save_artifact (4)
             }
         }
     }
-    parallel branches
+
 }
 
 def save_artifact (int i) {
