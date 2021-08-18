@@ -39,7 +39,7 @@ pipeline {
 
 def save_artifact () {
     test_results = [:]
-    test_results["artifact"] = "artifact value"
+    test_results["artifact"] = "build number ${currentBuild.number}"
 
     writeYaml(file: "test_artifact.yaml", data: test_results, overwrite: true)
     archiveArtifacts artifacts: "test_artifact.yaml"
