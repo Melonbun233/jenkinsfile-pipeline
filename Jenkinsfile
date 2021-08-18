@@ -57,7 +57,7 @@ def read_artifact() {
         filter: 'test_artifact.yaml', 
         fingerprintArtifacts: true,
         projectName: '${JOB_NAME}', 
-        selector: specific("${currentBuild.previousBuild.number}"), 
+        selector: specific("lastBuild"), 
         optional: true
     )
 
