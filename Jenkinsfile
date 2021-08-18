@@ -62,6 +62,8 @@ def read_artifact() {
     )
 
     if (fileExists("test_artifact.yaml")){
+        test_results = readYaml(file: "test_artifact.yaml")
+        echo test_results["artifact"]
         echo "test_artifact copied"
     } else {
         echo "test_artifact not found"
