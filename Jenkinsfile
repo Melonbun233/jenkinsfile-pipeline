@@ -41,22 +41,22 @@ def save_artifact () {
     test_results = [:]
     test_results["artifact"] = "artifact value"
 
-    writeYaml(file: "test_artifact.yaml", data: test_results)
+    writeYaml(file: "test_artifact.yaml", data: test_results, overwrite: true)
     archiveArtifacts artifacts: "test_artifact.yaml"
     echo 'Saving Artifact..'
 }
 
 def read_artifact() {
-    if (env.BUILD_NUMBER == '1') {
+    if (currentBuild.number == '1') {
         echo "First build, not expect artifact"
         return
     } 
 
-    echo "Current build number: ${BUILD_NUMBER}. Previously: ${currentBuild.previousBuild.number}"
-    copyArtifacts filter: 'test_artifact.yaml', 
+    echo ("Current build number: ${currentBuild.number}. Previously: ${currentBuild.previousBuild.number}")
+    copyArtifacts (filter: 'test_artifact.yaml', 
         projectName: '${JOB_NAME}', 
         selector: specific("${currentBuild.previousBuild.number}"), 
-        optional: true
+        optional: true)
 
     if (fileExists("test_artifact.yaml")){
         echo "test_artifact copied"
