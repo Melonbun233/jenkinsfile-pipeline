@@ -26,8 +26,6 @@ pipeline {
     stages {
         stage('Try to retrive Artifact') {
             steps {
-                echo "Current build number: ${BUILD_NUMBER}. Previously: ${currentBuild.previousBuild.number}"
-                copyArtifacts filter: 'test_artifact.yaml', projectName: '${JOB_NAME}', selector: specific(currentBuild.previousBuild.number), optional: true
                 read_artifact()
             }
         }
@@ -51,7 +49,16 @@ def save_artifact () {
 def read_artifact() {
     if (env.BUILD_NUMBER == '1') {
         echo "First build, not expect artifact"
-    } else if (fileExists("test_artifact.yaml")){
+        return
+    } 
+
+    echo "Current build number: ${BUILD_NUMBER}. Previously: ${currentBuild.previousBuild.number}"
+    copyArtifacts filter: 'test_artifact.yaml', 
+        projectName: '${JOB_NAME}', 
+        selector: specific("${currentBuild.previousBuild.number}"), 
+        optional: true
+
+    if (fileExists("test_artifact.yaml")){
         echo "test_artifact copied"
     } else {
         echo "test_artifact not found"
