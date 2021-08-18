@@ -25,28 +25,48 @@ pipeline {
 
     stages {
         stage('Try to retrive Artifact') {
-            steps {
-                read_artifact()
+            parallel {
+                stage('Retrive Branch 1') {
+                    steps {
+                        read_artifact (1)
+                    }
+                }
+                stage('Retrive Branch 2') {
+                    steps {
+                        read_artifact (2)
+                    }
+                }
+                stage('Retrive Branch 3') {
+                    steps {
+                        read_artifact (3)
+                    }
+                }
+                stage('Retrive Branch 4') {
+                    steps {
+                        read_artifact (4)
+                    }
+                }
             }
         }
+
         stage('Create Artifact and save') {
             parallel {
-                stage('Branch 1') {
+                stage('Save Branch 1') {
                     steps {
                         save_artifact (1)
                     }
                 }
-                stage('Branch 2') {
+                stage('Save Branch 2') {
                     steps {
                         save_artifact (2)
                     }
                 }
-                stage('Branch 3') {
+                stage('Save Branch 3') {
                     steps {
                         save_artifact (3)
                     }
                 }
-                stage('Branch 4') {
+                stage('Save Branch 4') {
                     steps {
                         save_artifact (4)
                     }
@@ -65,7 +85,7 @@ def save_artifact (int i) {
     echo "Saving Artifact on Branch ${i}.."
 }
 
-def read_artifact() {
+def read_artifact(int i) {
     if (currentBuild.number == '1') {
         echo "First build, not expect artifact"
         return
@@ -73,15 +93,15 @@ def read_artifact() {
 
     echo ("Current build number: ${currentBuild.number}. Previously: ${currentBuild.previousBuild.number}")
     copyArtifacts (
-        filter: 'test_artifact.yaml', 
+        filter: "test_artifact_${i}.yaml", 
         fingerprintArtifacts: true,
-        projectName: '${JOB_NAME}', 
+        projectName: "${JOB_NAME}", 
         selector: specific("lastBuild"), 
         optional: true
     )
 
-    if (fileExists("test_artifact.yaml")){
-        test_results = readYaml(file: "test_artifact.yaml")
+    if (fileExists("test_artifact_${i}.yaml")){
+        test_results = readYaml(file: "test_artifact_${i}.yaml")
         echo test_results["artifact"]
         echo "test_artifact copied"
     } else {
