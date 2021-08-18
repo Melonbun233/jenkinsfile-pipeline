@@ -31,19 +31,38 @@ pipeline {
         }
         stage('Create Artifact and save') {
             steps {
-                save_artifact()
+                save_artifact_in_parallel()
             }
         }
     }
 }
 
-def save_artifact () {
-    test_results = [:]
-    test_results["artifact"] = "build number ${currentBuild.number}"
+def save_artifact_in_parallel () {
+    // test parallel saving
+    branches = [:]
+    branch_size = 4
+    for (int i = 0; i < branch_size; i ++) {
+        branches["branch_${i}"] = {
+            stage("Save Artifact Branch_${i}") {
+                steps{
+                    save_artifact (i)
+                }
+            }
+        }
+    }
 
-    writeYaml(file: "test_artifact.yaml", data: test_results, overwrite: true)
-    archiveArtifacts artifacts: "test_artifact.yaml"
-    echo 'Saving Artifact..'
+    lock(label: "test parallel label", quantity: branch_size, resource: null) { 
+            parallel branches
+    }
+}
+
+def save_artifact (int i) {
+    test_results = [:]
+    test_results["artifact"] = "build number ${currentBuild.number}, branch ${i}"
+
+    writeYaml(file: "test_artifact_${i}.yaml", data: test_results, overwrite: true)
+    archiveArtifacts artifacts: "test_artifact_${i}.yaml"
+    echo "Saving Artifact on Branch ${i}.."
 }
 
 def read_artifact() {
