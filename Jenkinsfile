@@ -51,7 +51,7 @@ def save_artifact () {
 def read_artifact() {
     if (env.BUILD_NUMBER == '1') {
         echo "First build, not expect artifact"
-    } else {
+    } else if (fileExists("test_artifact.yaml")){
         echo "test_artifact copied"
     } else {
         echo "test_artifact not found"
