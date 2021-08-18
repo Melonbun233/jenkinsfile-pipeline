@@ -27,7 +27,7 @@ pipeline {
         stage('Try to retrive Artifact') {
             steps {
                 echo "Current build number: ${BUILD_NUMBER}. Previously: ${currentBuild.previousBuild.number}"
-                copyArtifacts filter: 'test_artifact.yaml', projectName: '${JOB_NAME}', selector: specific(currentBuild.previousBuild.number) optional: true
+                copyArtifacts filter: 'test_artifact.yaml', projectName: '${JOB_NAME}', selector: specific(currentBuild.previousBuild.number), optional: true
                 read_artifact()
             }
         }
