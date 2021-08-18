@@ -24,19 +24,19 @@ pipeline {
     agent any
 
     stages {
-        stage('Build') {
+        stage('Try to retrive Artifact') {
             steps {
                 echo 'Building..'
             }
         }
-        stage('Test') {
+        stage('Create Artifact and save') {
             steps {
-                echo 'Testing..'
-            }
-        }
-        stage('Deploy') {
-            steps {
-                echo 'Deploying....'
+                test_results = [:]
+                test_results["artifact"] = "artifact value"
+
+                writeYaml(file: "test_artifact.yaml", data: test_results)
+                archiveArtifacts artifacts: "test_artifact.yaml"
+                echo 'Saving Artifact..'
             }
         }
     }
