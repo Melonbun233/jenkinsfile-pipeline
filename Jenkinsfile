@@ -31,13 +31,21 @@ pipeline {
         }
         stage('Create Artifact and save') {
             steps {
-                test_results = [:]
-                test_results["artifact"] = "artifact value"
-
-                writeYaml(file: "test_artifact.yaml", data: test_results)
-                archiveArtifacts artifacts: "test_artifact.yaml"
-                echo 'Saving Artifact..'
+                save_artifact()
             }
         }
     }
+}
+
+def save_artifact () {
+    test_results = [:]
+    test_results["artifact"] = "artifact value"
+
+    writeYaml(file: "test_artifact.yaml", data: test_results)
+    archiveArtifacts artifacts: "test_artifact.yaml"
+    echo 'Saving Artifact..'
+}
+
+def read_artifact() {
+
 }
