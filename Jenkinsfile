@@ -28,11 +28,7 @@ pipeline {
             steps {
                 echo "Current build number: ${BUILD_NUMBER}. Previously: ${BUILD_NUMBER - 1}"
                 copyArtifacts filter: 'test_artifact.yaml', projectName: '${JOB_NAME}', selector: specific('${BUILD_NUMBER-1}')
-                if (fileExist('test_artifact.yaml')) {
-                    echo "test_artifact copied"
-                } else {
-                    echo "test_artifact not found"
-                }
+                read_artifact()
             }
         }
         stage('Create Artifact and save') {
@@ -52,8 +48,10 @@ def save_artifact () {
     echo 'Saving Artifact..'
 }
 
-def read_artifact(String job_name, int build_num) {
-    if (build_num == 1) {
-
+def read_artifact() {
+    if (fileExist('test_artifact.yaml')) {
+        echo "test_artifact copied"
+    } else {
+        echo "test_artifact not found"
     }
 }
