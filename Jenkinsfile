@@ -20,6 +20,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+import org.jenkinsci.plugins.pipeline.modeldefinition.Utils
+
+def markStage() {
+    Utils.markStageWithTag("Test", "Tag", "Tag Value")
+}
+
 pipeline {
     agent any
 
@@ -32,6 +38,7 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Testing..'
+                markStage()
             }
         }
         stage('Deploy') {
