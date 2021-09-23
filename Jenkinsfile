@@ -23,7 +23,7 @@ THE SOFTWARE.
 import org.jenkinsci.plugins.pipeline.modeldefinition.Utils
 
 def markStage() {
-    Utils.markStageWithTag("Test", "Tag", "Tag Value")
+    Utils.markStageSkippedForConditional("Test")
 }
 
 pipeline {
