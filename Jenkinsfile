@@ -30,9 +30,9 @@ pipeline {
     agent any
 
     stages {
-        stage('Build') {
+        stage('Init') {
             steps {
-                echo 'Building..'
+                echo 'Init..'
             }
         }
         stage('Test') {
@@ -46,5 +46,38 @@ pipeline {
                 echo 'Deploying....'
             }
         }
+    }
+}
+
+def save_artifact (int i) {
+    test_results = [:]
+    test_results["artifact"] = "build number ${currentBuild.number}, branch ${i}"
+
+    writeYaml(file: "test_artifact_${i}.yaml", data: test_results, overwrite: true)
+    archiveArtifacts artifacts: "test_artifact_${i}.yaml"
+    echo "Saving Artifact on Branch ${i}.."
+}
+
+def read_artifact(int i) {
+    if (currentBuild.number == 1) {
+        echo "First build, not expect artifact"
+        return
+    } 
+
+    echo ("Current build number: ${currentBuild.number}. Previously: ${currentBuild.previousBuild.number}")
+    copyArtifacts (
+        filter: "test_artifact_${i}.yaml", 
+        fingerprintArtifacts: true,
+        projectName: "${JOB_NAME}", 
+        selector: specific("lastBuild"), 
+        optional: true
+    )
+
+    if (fileExists("test_artifact_${i}.yaml")){
+        test_results = readYaml(file: "test_artifact_${i}.yaml")
+        echo test_results["artifact"]
+        echo "test_artifact copied"
+    } else {
+        echo "test_artifact not found"
     }
 }
